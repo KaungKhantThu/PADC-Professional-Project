@@ -4,12 +4,15 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import xyz.kkt.padcprofessionalproject.R;
+import xyz.kkt.padcprofessionalproject.adapters.NewsAdpater;
 
 public class NewsListActivity extends AppCompatActivity {
 
@@ -28,6 +31,11 @@ public class NewsListActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        RecyclerView rvNews = findViewById(R.id.rv_news_list);
+        rvNews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        NewsAdpater newsAdpater = new NewsAdpater(getApplicationContext());
+        rvNews.setAdapter(newsAdpater);
     }
 
     @Override
