@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import xyz.kkt.padcprofessionalproject.R;
+import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
 import xyz.kkt.padcprofessionalproject.viewHolders.NewsViewHolder;
 
 /**
@@ -15,16 +16,18 @@ import xyz.kkt.padcprofessionalproject.viewHolders.NewsViewHolder;
 
 public class NewsAdpater extends RecyclerView.Adapter<NewsViewHolder> {
 
-    LayoutInflater mLayoutInflater;
+    private LayoutInflater mLayoutInflater;
+    private NewsItemDelegate mNewsItemDelegate;
 
-    public NewsAdpater(Context context) {
+    public NewsAdpater(Context context, NewsItemDelegate newsItemDelegate) {
         mLayoutInflater = LayoutInflater.from(context);
+        mNewsItemDelegate = newsItemDelegate;
     }
 
     @Override
     public NewsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View newsItemView = mLayoutInflater.inflate(R.layout.view_item_news, parent, false);
-        return new NewsViewHolder(newsItemView);
+        return new NewsViewHolder(newsItemView, mNewsItemDelegate);
     }
 
     @Override
