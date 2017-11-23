@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_latest_news"
+        android:checked="true"
+        android:icon="@drawable/ic_description_24dp"
+        android:title="Latest News"></item>
+
+    <item
+        android:id="@+id/menu_just_for_you"
+        android:icon="@drawable/ic_library_books_24dp"
+        android:title="Just For You"></item>
+
+    <item
+        android:id="@+id/menu_favorite_news"
+        android:icon="@drawable/ic_favorite_24dp"
+        android:title="Favorite News"></item>
+</menu>
