@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import xyz.kkt.padcprofessionalproject.R;
+import xyz.kkt.padcprofessionalproject.contents.content;
 import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
 import xyz.kkt.padcprofessionalproject.viewHolders.NewsViewHolder;
 
@@ -32,11 +33,13 @@ public class NewsAdpater extends RecyclerView.Adapter<NewsViewHolder> {
 
     @Override
     public void onBindViewHolder(NewsViewHolder holder, int position) {
-
+        holder.bind( xyz.kkt.padcprofessionalproject.contents.content.CONTENTS[position]);
     }
 
     @Override
     public int getItemCount() {
-        return 16;
+        return 3;
     }
+
+
 }

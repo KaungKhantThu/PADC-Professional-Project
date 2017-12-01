@@ -33,10 +33,16 @@
             tools:context="xyz.kkt.padcprofessionalproject.activities.NewsListActivity"
             tools:showIn="@layout/activity_news_list">
 
-            <android.support.v7.widget.RecyclerView
+            <xyz.kkt.padcprofessionalproject.components.SmartRecyclerView
                 android:id="@+id/rv_news_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <include
+                android:id="@+id/vp_empty_news"
+                layout="@layout/view_pod_empty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </RelativeLayout>
 
@@ -56,8 +62,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:headerLayout="@layout/view_pod_login_user"
-        app:menu="@menu/left_menu_news"
         app:itemTextColor="@drawable/state_left_menu_item"
-        />
+        app:menu="@menu/left_menu_news" />
 
 </android.support.v4.widget.DrawerLayout>

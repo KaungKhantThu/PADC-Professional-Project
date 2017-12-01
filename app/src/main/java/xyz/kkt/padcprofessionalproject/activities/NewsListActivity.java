@@ -18,12 +18,24 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.kkt.padcprofessionalproject.R;
 import xyz.kkt.padcprofessionalproject.adapters.NewsAdpater;
+import xyz.kkt.padcprofessionalproject.components.EmptyViewPod;
+import xyz.kkt.padcprofessionalproject.components.SmartRecyclerView;
+import xyz.kkt.padcprofessionalproject.components.SmartScrollListener;
+import xyz.kkt.padcprofessionalproject.contents.content;
 import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
 
 public class NewsListActivity extends AppCompatActivity implements NewsItemDelegate {
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+
+    @BindView(R.id.rv_news_list)
+    SmartRecyclerView rvNews;
+
+    @BindView(R.id.vp_empty_news)
+    EmptyViewPod vpEmptyNews;
+
+    private SmartScrollListener mSmartScrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,21 +45,29 @@ public class NewsListActivity extends AppCompatActivity implements NewsItemDeleg
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-                drawerLayout.openDrawer(GravityCompat.START);
-
+                //drawerLayout.openDrawer(GravityCompat.START);
+                Intent intent = LoginRegisterActivity.newIntent(getApplicationContext());
+                startActivity(intent);
             }
         });
 
-        RecyclerView rvNews = findViewById(R.id.rv_news_list);
+        rvNews.setEmptyView(vpEmptyNews);
         rvNews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
         NewsAdpater newsAdpater = new NewsAdpater(getApplicationContext(), this);
         rvNews.setAdapter(newsAdpater);
+
+        mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
+            @Override
+            public void onListEndReach() {
+                Snackbar.make(rvNews, "This is all the data for Now.", Snackbar.LENGTH_LONG).show();
+            }
+        });
+
+        rvNews.addOnScrollListener(mSmartScrollListener);
     }
 
     @Override
@@ -64,9 +84,12 @@ public class NewsListActivity extends AppCompatActivity implements NewsItemDeleg
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case android.R.id.home:
+                drawerLayout.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_settings:
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -93,8 +116,8 @@ public class NewsListActivity extends AppCompatActivity implements NewsItemDeleg
     }
 
     @Override
-    public void onTapNews() {
-        Intent intent = NewsDetailActivity.newIntent(getApplicationContext());
+    public void onTapNews(content content) {
+        Intent intent = NewsDetailActivity.newIntent(getApplicationContext(), content);
         startActivity(intent);
     }
 }

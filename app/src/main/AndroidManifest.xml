@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="xyz.kkt.padcprofessionalproject">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
         android:name=".SFCNewsApp"
         android:allowBackup="true"
@@ -27,6 +28,24 @@
 
         </activity>
 
+        <activity
+            android:name=".activities.LoginRegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+        <activity
+            android:name=".activities.FabActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+
+
+        <receiver android:name=".receivers.InternetStateReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
