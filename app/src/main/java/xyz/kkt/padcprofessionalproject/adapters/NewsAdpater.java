@@ -6,8 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import xyz.kkt.padcprofessionalproject.R;
 import xyz.kkt.padcprofessionalproject.contents.content;
+import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
 import xyz.kkt.padcprofessionalproject.viewHolders.NewsViewHolder;
 
@@ -15,13 +18,12 @@ import xyz.kkt.padcprofessionalproject.viewHolders.NewsViewHolder;
  * Created by Lenovo on 11/4/2017.
  */
 
-public class NewsAdpater extends RecyclerView.Adapter<NewsViewHolder> {
+public class NewsAdpater extends BaseRecycleAdapter<NewsViewHolder, NewsVO> {
 
-    private LayoutInflater mLayoutInflater;
     private NewsItemDelegate mNewsItemDelegate;
 
     public NewsAdpater(Context context, NewsItemDelegate newsItemDelegate) {
-        mLayoutInflater = LayoutInflater.from(context);
+        super(context);
         mNewsItemDelegate = newsItemDelegate;
     }
 
@@ -30,16 +32,5 @@ public class NewsAdpater extends RecyclerView.Adapter<NewsViewHolder> {
         View newsItemView = mLayoutInflater.inflate(R.layout.view_item_news, parent, false);
         return new NewsViewHolder(newsItemView, mNewsItemDelegate);
     }
-
-    @Override
-    public void onBindViewHolder(NewsViewHolder holder, int position) {
-        holder.bind( xyz.kkt.padcprofessionalproject.contents.content.CONTENTS[position]);
-    }
-
-    @Override
-    public int getItemCount() {
-        return 3;
-    }
-
 
 }

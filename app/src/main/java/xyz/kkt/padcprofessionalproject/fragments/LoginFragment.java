@@ -21,7 +21,7 @@ import xyz.kkt.padcprofessionalproject.delegates.LoginRegisterDelegate;
  * Created by Lenovo on 11/26/2017.
  */
 
-public class LoginFragment extends Fragment {
+public class LoginFragment extends BaseFragment {
 
     private LoginRegisterDelegate mLoginRegisterDelegate;
 
@@ -54,5 +54,10 @@ public class LoginFragment extends Fragment {
     @OnClick(R.id.btn_to_register)
     public void onTapToRegister(View view) {
         mLoginRegisterDelegate.onTapToRegister();
+    }
+
+    @Override
+    public void checkNetworkConnectivity() {
+        super.checkNetworkConnectivity();
     }
 }

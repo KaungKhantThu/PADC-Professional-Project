@@ -2,6 +2,7 @@ package xyz.kkt.padcprofessionalproject.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -14,6 +15,10 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.kkt.padcprofessionalproject.R;
@@ -23,8 +28,10 @@ import xyz.kkt.padcprofessionalproject.components.SmartRecyclerView;
 import xyz.kkt.padcprofessionalproject.components.SmartScrollListener;
 import xyz.kkt.padcprofessionalproject.contents.content;
 import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
+import xyz.kkt.padcprofessionalproject.events.RestApiEvents;
+import xyz.kkt.padcprofessionalproject.events.TapNewsEvent;
 
-public class NewsListActivity extends AppCompatActivity implements NewsItemDelegate {
+public class NewsListActivity extends BaseActivity implements NewsItemDelegate {
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
@@ -34,6 +41,8 @@ public class NewsListActivity extends AppCompatActivity implements NewsItemDeleg
 
     @BindView(R.id.vp_empty_news)
     EmptyViewPod vpEmptyNews;
+
+    NewsAdpater mNewsAdpater;
 
     private SmartScrollListener mSmartScrollListener;
 
@@ -57,8 +66,8 @@ public class NewsListActivity extends AppCompatActivity implements NewsItemDeleg
 
         rvNews.setEmptyView(vpEmptyNews);
         rvNews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        NewsAdpater newsAdpater = new NewsAdpater(getApplicationContext(), this);
-        rvNews.setAdapter(newsAdpater);
+        mNewsAdpater = new NewsAdpater(getApplicationContext(), this);
+        rvNews.setAdapter(mNewsAdpater);
 
         mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
             @Override
@@ -96,6 +105,18 @@ public class NewsListActivity extends AppCompatActivity implements NewsItemDeleg
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     public void onTapComment() {
 
     }
@@ -116,8 +137,24 @@ public class NewsListActivity extends AppCompatActivity implements NewsItemDeleg
     }
 
     @Override
-    public void onTapNews(content content) {
-        Intent intent = NewsDetailActivity.newIntent(getApplicationContext(), content);
+    public void onTapNews() {
+        Intent intent = NewsDetailActivity.newIntent(getApplicationContext());
         startActivity(intent);
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTapNewsEvent(TapNewsEvent event) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNewsDataLoaded(RestApiEvents.NewsDataLoadedEvent event) {
+        mNewsAdpater.appendNewData(event.getLoadNews());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onErrorInvokingAPI(RestApiEvents.ErrorInvokingAPIEvent event) {
+        Snackbar.make(rvNews, event.getErrorMsg(), BaseTransientBottomBar.LENGTH_INDEFINITE);
+    }
+
 }

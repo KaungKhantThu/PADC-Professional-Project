@@ -22,7 +22,7 @@ import xyz.kkt.padcprofessionalproject.contents.content;
  * Created by Lenovo on 11/11/2017.
  */
 
-public class NewsDetailActivity extends AppCompatActivity {
+public class NewsDetailActivity extends BaseActivity {
     @BindView(R.id.vp_news_details_images)
     ViewPager vpNewsDetailsImages;
 
@@ -50,23 +50,10 @@ public class NewsDetailActivity extends AppCompatActivity {
         mRelatedNewsAdapter = new RelatedNewsAdapter(getApplicationContext());
         rvRelatedNews.setAdapter(mRelatedNewsAdapter);
 
-        Intent startIntent = getIntent();
-        Bundle bundle = startIntent.getExtras();
-        if (bundle != null) {
-            String Id = bundle.getString(ID);
-            mContent = content.getItem(Id);
-
-            bindData(mContent);
-        }
     }
 
-    private void bindData(content mContent) {
-        tvNewsDetail.setText(mContent.get(content.Field.DETAILNEWS));
-    }
-
-    public static Intent newIntent(Context context, content content) {
+    public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, NewsDetailActivity.class);
-        intent.putExtra(NewsDetailActivity.ID, content.getId());
         return intent;
     }
 }

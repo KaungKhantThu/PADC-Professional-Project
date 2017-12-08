@@ -15,5 +15,5 @@ public interface NewsItemDelegate {
 
     void onTapStatics();
 
-    void onTapNews(content content);
+    void onTapNews();
 }
