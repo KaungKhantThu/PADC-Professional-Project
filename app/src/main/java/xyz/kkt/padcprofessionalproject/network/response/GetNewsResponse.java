@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
+import xyz.kkt.padcprofessionalproject.network.SFCResponse;
 
 /**
  * Created by Lenovo on 12/3/2017.
  */
 
-public class GetNewsResponse {
+public class GetNewsResponse extends SFCResponse{
 
     @SerializedName("code")
     private int code;
