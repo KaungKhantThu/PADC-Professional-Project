@@ -1,5 +1,7 @@
 package xyz.kkt.padcprofessionalproject.events;
 
+import android.content.Context;
+
 import java.util.List;
 
 import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
@@ -29,10 +31,12 @@ public class RestApiEvents {
     public static class NewsDataLoadedEvent {
         private int loadedPageIndex;
         private List<NewsVO> loadNews;
+        private Context context;
 
-        public NewsDataLoadedEvent(int loadedPageIndex, List<NewsVO> loadNews) {
+        public NewsDataLoadedEvent(int loadedPageIndex, List<NewsVO> loadNews,Context context) {
             this.loadedPageIndex = loadedPageIndex;
             this.loadNews = loadNews;
+            this.context=context;
         }
 
         public int getLoadedPageIndex() {
@@ -41,6 +45,10 @@ public class RestApiEvents {
 
         public List<NewsVO> getLoadNews() {
             return loadNews;
+        }
+
+        public Context getContext() {
+            return context;
         }
     }
 

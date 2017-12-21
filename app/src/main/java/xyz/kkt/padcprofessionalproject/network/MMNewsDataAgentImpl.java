@@ -1,6 +1,8 @@
 package xyz.kkt.padcprofessionalproject.network;
 
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,17 +54,17 @@ public class MMNewsDataAgentImpl implements MMNewsDataAgent {
     }
 
     @Override
-    public void loadMMNews(String accessToken, int pageNo) {
+    public void loadMMNews(String accessToken, int pageNo, final Context context) {
         Call<GetNewsResponse> loadMMNewsCall = theAPI.loadMMNews(pageNo, accessToken);
         loadMMNewsCall.enqueue(new SFCCallback<GetNewsResponse>() {
             @Override
             public void onResponse(Call<GetNewsResponse> call, Response<GetNewsResponse> response) {
-                super.onResponse(call,response);//call parent method since parent is abstract class
+                super.onResponse(call, response);//call parent method since parent is abstract class
                 GetNewsResponse getNewsResponse = response.body();
                 if (getNewsResponse != null
                         && getNewsResponse.getNewsList().size() > 0) {
                     RestApiEvents.NewsDataLoadedEvent newsDetailLoadedEvent = new RestApiEvents.NewsDataLoadedEvent(
-                            getNewsResponse.getPageNo(), getNewsResponse.getNewsList());
+                            getNewsResponse.getPageNo(), getNewsResponse.getNewsList(), context);
                     EventBus.getDefault().post(newsDetailLoadedEvent);
                 }
             }

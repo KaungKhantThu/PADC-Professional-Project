@@ -48,6 +48,13 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
+        <provider
+            android:name=".network.persistence.MMNewsProvider"
+            android:authorities="xyz.kkt.padcprofessionalproject"
+            android:exported="false"
+            android:syncable="true" />
+
     </application>
 
 </manifest>

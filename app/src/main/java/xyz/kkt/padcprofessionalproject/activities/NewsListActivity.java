@@ -1,10 +1,14 @@
 package xyz.kkt.padcprofessionalproject.activities;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.BaseTransientBottomBar;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,6 +24,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,8 +40,11 @@ import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
 import xyz.kkt.padcprofessionalproject.events.RestApiEvents;
 import xyz.kkt.padcprofessionalproject.events.TapNewsEvent;
+import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsContract;
 
-public class NewsListActivity extends BaseActivity implements NewsItemDelegate {
+public class NewsListActivity extends BaseActivity implements NewsItemDelegate, LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int NEWS_LIST_LOADER_ID = 1;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
@@ -81,19 +89,20 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate {
             @Override
             public void onListEndReach() {
                 //Snackbar.make(rvNews, "This is all the data for Now.", Snackbar.LENGTH_LONG).show();
-                NewsModel.getInstance().loadMoreNews();
+                NewsModel.getInstance().loadMoreNews(getApplicationContext());
             }
         });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                NewsModel.getInstance().forceRefreshNews();
+                NewsModel.getInstance().forceRefreshNews(getApplicationContext());
             }
         });
 
         rvNews.addOnScrollListener(mSmartScrollListener);
 
+        getSupportLoaderManager().initLoader(NEWS_LIST_LOADER_ID, null, this);
     }
 
     @Override
@@ -128,7 +137,7 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate {
         List<NewsVO> newsList = NewsModel.getInstance().getNews();
         if (!newsList.isEmpty()) {
             mNewsAdpater.setNewData(newsList);
-        }else{
+        } else {
             swipeRefreshLayout.setRefreshing(true);
         }
     }
@@ -172,8 +181,9 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNewsDataLoaded(RestApiEvents.NewsDataLoadedEvent event) {
-        mNewsAdpater.appendNewData(event.getLoadNews());
-        swipeRefreshLayout.setRefreshing(false);
+//        mNewsAdpater.appendNewData(event.getLoadNews());
+//        swipeRefreshLayout.setRefreshing(false);
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -182,4 +192,32 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate {
         swipeRefreshLayout.setRefreshing(false);
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getApplicationContext(),
+                MMNewsContract.NewsEntry.CONTENT_URI,
+                null, null,
+                null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data != null && data.moveToFirst()) {
+            List<NewsVO> newsList = new ArrayList<>();
+            do {
+                NewsVO news = NewsVO.parseFromCursor(data);
+                newsList.add(news);
+            } while (data.moveToNext());
+            {
+                mNewsAdpater.setNewData(newsList);
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
 }

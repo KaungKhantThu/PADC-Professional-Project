@@ -1,15 +1,22 @@
 package xyz.kkt.padcprofessionalproject.data.models;
 
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.util.Log;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import xyz.kkt.padcprofessionalproject.SFCNewsApp;
 import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 import xyz.kkt.padcprofessionalproject.events.RestApiEvents;
 import xyz.kkt.padcprofessionalproject.network.MMNewsDataAgentImpl;
+import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsContract;
+import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsProvider;
 import xyz.kkt.padcprofessionalproject.utils.AppConstants;
 
 /**
@@ -24,6 +31,8 @@ public class NewsModel {
 
     private int mmNewsPageIndex = 1;
 
+
+
     private NewsModel() {
         EventBus.getDefault().register(this);
         mNews = new ArrayList<>();
@@ -36,29 +45,38 @@ public class NewsModel {
         return objInstance;
     }
 
-    public void startLoadingMMNews() {
-        MMNewsDataAgentImpl.getInstance().loadMMNews(AppConstants.ACCESS_TOKEN, mmNewsPageIndex);
+    public void startLoadingMMNews(Context context) {
+        MMNewsDataAgentImpl.getInstance().loadMMNews(AppConstants.ACCESS_TOKEN, mmNewsPageIndex, context);
     }
 
     public List<NewsVO> getNews() {
         return mNews;
     }
 
-    public void loadMoreNews() {
-        MMNewsDataAgentImpl.getInstance().loadMMNews(AppConstants.ACCESS_TOKEN, mmNewsPageIndex);
+    public void loadMoreNews(Context context) {
+        MMNewsDataAgentImpl.getInstance().loadMMNews(AppConstants.ACCESS_TOKEN, mmNewsPageIndex, context);
     }
 
-    public void forceRefreshNews() {
+    public void forceRefreshNews(Context context) {
         mNews = new ArrayList<>();
         mmNewsPageIndex = 1;
-        startLoadingMMNews();
+        startLoadingMMNews(context);
     }
 
     @Subscribe
     public void onNewsDataLoaded(RestApiEvents.NewsDataLoadedEvent event) {
         mNews.addAll(event.getLoadNews());
         mmNewsPageIndex = event.getLoadedPageIndex() + 1;
+
+        //TODO Logic to save the data in Persistence Layer
+
+        ContentValues[] newsCVs = new ContentValues[event.getLoadNews().size()];
+        for (int index = 0; index < newsCVs.length; index++) {
+            newsCVs[index] = event.getLoadNews().get(index).parseToContentValues();
+        }
+
+        int insertedRows = event.getContext().getContentResolver().bulkInsert(MMNewsContract.NewsEntry.CONTENT_URI,
+                newsCVs);
+        Log.d(SFCNewsApp.LOG_TAG, "Inserted Rows : " + insertedRows);
     }
-
-
 }

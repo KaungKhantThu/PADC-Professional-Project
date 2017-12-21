@@ -1,8 +1,13 @@
 package xyz.kkt.padcprofessionalproject.data.vo;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+
+import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsContract;
 
 /**
  * Created by Lenovo on 12/2/2017.
@@ -73,4 +78,26 @@ public class NewsVO {
     public List<SendToVO> getSendTos() {
         return sendTos;
     }
+
+    public ContentValues parseToContentValues() {
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put(MMNewsContract.NewsEntry.COLUMN_NEWS_ID, newsId);
+        contentValues.put(MMNewsContract.NewsEntry.COLUMN_BRIEF, brief);
+        contentValues.put(MMNewsContract.NewsEntry.COLUMN_DETAILS, details);
+        contentValues.put(MMNewsContract.NewsEntry.COLUMN_POSTED_DATE, postedDate);
+        contentValues.put(MMNewsContract.NewsEntry.COLUMN_PUBLICATION_ID, publication.getPublicationId());
+
+        return contentValues;
+    }
+
+    public static NewsVO parseFromCursor(Cursor cursor) {
+        NewsVO news = new NewsVO();
+        news.newsId = cursor.getString(cursor.getColumnIndex(MMNewsContract.NewsEntry.COLUMN_NEWS_ID));
+        news.brief = cursor.getString(cursor.getColumnIndex(MMNewsContract.NewsEntry.COLUMN_BRIEF));
+        news.details = cursor.getString(cursor.getColumnIndex(MMNewsContract.NewsEntry.COLUMN_DETAILS));
+        news.postedDate = cursor.getString(cursor.getColumnIndex(MMNewsContract.NewsEntry.COLUMN_POSTED_DATE));
+        return news;
+    }
+
 }

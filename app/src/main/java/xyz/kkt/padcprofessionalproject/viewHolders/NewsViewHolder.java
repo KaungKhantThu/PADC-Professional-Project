@@ -46,47 +46,55 @@ public class NewsViewHolder extends BaseViewHolder<NewsVO> {
     @Override
     public void setData(NewsVO data) {
 
-        String brief = data.getBrief();
-        String publicationName = data.getPublication().getTitle();
-        String publishdate = data.getPostedDate();
-        String publicationLogo = data.getPublication().getLogo();
+
+        if (data.getBrief() != null) {
+            tvBriefNews.setText(data.getBrief());
+        }
+
+        if (data.getPublication() != null) {
+            if (data.getPublication().getTitle() != null) {
+                tvPublicationName.setText(data.getPublication().getTitle());
+            }
+            if (data.getPublication().getLogo() != null) {
+                Glide.with(ivPublicationLogo.getContext())
+                        .load(data.getPublication().getLogo())
+                        .into(ivPublicationLogo);
+            }
+        }
+
+
+        if (data.getPostedDate() != null) {
+            tvPublishDate.setText(data.getPostedDate());
+        }
+
         int like = 0;
         int comment = 0;
         int sentTo = 0;
 
-        if (brief != null) {
-            tvBriefNews.setText(data.getBrief());
-        }
 
-        if (publicationName != null) {
-            tvPublicationName.setText(data.getPublication().getTitle());
-        }
+        if (data.getFavoriteActions() != null)
 
-        if (publishdate != null) {
-            tvPublishDate.setText(data.getPostedDate());
-        }
-
-        if (data.getFavoriteActions() != null) {
+        {
             like = data.getFavoriteActions().size();
         }
 
-        if (data.getComments() != null) {
+        if (data.getComments() != null)
+
+        {
             comment = data.getComments().size();
         }
 
-        if (data.getSendTos() != null) {
+        if (data.getSendTos() != null)
+
+        {
             sentTo = data.getSendTos().size();
         }
 
         tvNewsStatisticalData.setText(like + " Likes- " + comment + " Comments - Send to " + sentTo + " people");
 
-        if (publicationLogo != null) {
-            Glide.with(ivPublicationLogo.getContext())
-                    .load(data.getPublication().getLogo())
-                    .into(ivPublicationLogo);
-        }
+        if (data.getImages() != null)
 
-        if (data.getImages() != null) {
+        {
             Glide.with(ivNewsHeroImage.getContext())
                     .load(data.getImages().get(0))
                     .into(ivNewsHeroImage);
