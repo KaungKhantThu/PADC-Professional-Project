@@ -92,12 +92,15 @@ public class NewsViewHolder extends BaseViewHolder<NewsVO> {
 
         tvNewsStatisticalData.setText(like + " Likes- " + comment + " Comments - Send to " + sentTo + " people");
 
-        if (data.getImages() != null)
+        if (data.getImages() != null) {
+            if (!data.getImages().isEmpty()) {
+                Glide.with(ivNewsHeroImage.getContext())
+                        .load(data.getImages().get(0))
+                        .into(ivNewsHeroImage);
+            } else {
+                ivNewsHeroImage.setVisibility(View.GONE);
+            }
 
-        {
-            Glide.with(ivNewsHeroImage.getContext())
-                    .load(data.getImages().get(0))
-                    .into(ivNewsHeroImage);
         }
 
     }

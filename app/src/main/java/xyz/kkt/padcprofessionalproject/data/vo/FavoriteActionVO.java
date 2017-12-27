@@ -1,6 +1,8 @@
 package xyz.kkt.padcprofessionalproject.data.vo;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -45,4 +47,12 @@ public class FavoriteActionVO {
         return contentValues;
     }
 
+    public static FavoriteActionVO parseFromCursor(Cursor cursor) {
+        FavoriteActionVO favoriteAction = new FavoriteActionVO();
+        favoriteAction.favoriteId = cursor.getString(cursor.getColumnIndex(MMNewsContract.FavoriteActionEntry.COLUMN_FAVORITE_ID));
+        favoriteAction.favoriteDate = cursor.getString(cursor.getColumnIndex(MMNewsContract.FavoriteActionEntry.COLUMN_FAVORITE_DATE));
+        favoriteAction.actedUser = ActedUserVO.parseFromCursor(cursor);
+
+        return favoriteAction;
+    }
 }

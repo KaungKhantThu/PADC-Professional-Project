@@ -1,6 +1,7 @@
 package xyz.kkt.padcprofessionalproject.data.vo;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -40,6 +41,14 @@ public class PublicationVO {
         contentValues.put(MMNewsContract.PublicationEntry.COLUMN_TITLE, title);
         contentValues.put(MMNewsContract.PublicationEntry.COLUMN_LOGO, logo);
         return contentValues;
+    }
+
+    public static PublicationVO parseFromCursor(Cursor cursor) {
+        PublicationVO publications = new PublicationVO();
+        publications.publicationId = cursor.getString(cursor.getColumnIndex(MMNewsContract.PublicationEntry.COLUMN_PUBLICATION_ID));
+        publications.title = cursor.getString(cursor.getColumnIndex(MMNewsContract.PublicationEntry.COLUMN_TITLE));
+        publications.logo = cursor.getString(cursor.getColumnIndex(MMNewsContract.PublicationEntry.COLUMN_LOGO));
+        return publications;
     }
 
 }

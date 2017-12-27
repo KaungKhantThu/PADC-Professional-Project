@@ -202,10 +202,15 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        /*
+        don't close cursor because it needs to be refreshed
+        when the new data is loaded from network
+         */
+
         if (data != null && data.moveToFirst()) {
             List<NewsVO> newsList = new ArrayList<>();
             do {
-                NewsVO news = NewsVO.parseFromCursor(data);
+                NewsVO news = NewsVO.parseFromCursor(getApplicationContext(), data);
                 newsList.add(news);
             } while (data.moveToNext());
             {
