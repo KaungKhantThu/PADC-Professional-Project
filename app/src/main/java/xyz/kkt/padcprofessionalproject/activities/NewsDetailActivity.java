@@ -13,7 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,14 +43,22 @@ public class NewsDetailActivity extends BaseActivity implements LoaderManager.Lo
     @BindView(R.id.tv_news_detail)
     TextView tvNewsDetail;
 
+    @BindView(R.id.tv_publication_name)
+    TextView tvPublicationName;
+
+    @BindView(R.id.tv_publish_date)
+    TextView tvPublishDate;
+
+    @BindView(R.id.iv_publication_logo)
+    ImageView ivPublicationLogo;
+
+
     RelatedNewsAdapter mRelatedNewsAdapter;
+    NewsImagePagerAdapter newsImagePagerAdapter;
 
     private static final String IE_NEWS_ID = "IE_NEWS_ID";
     private static final int NEWS_DETAILS_LOADER_ID = 1002;
 
-
-    public final static String ID = "ID";
-    public content mContent;
 
     private String mNewsId;
 
@@ -57,7 +68,7 @@ public class NewsDetailActivity extends BaseActivity implements LoaderManager.Lo
         setContentView(R.layout.activity_news_detail);
         ButterKnife.bind(this, this);
 
-        NewsImagePagerAdapter newsImagePagerAdapter = new NewsImagePagerAdapter(getApplicationContext());
+        newsImagePagerAdapter = new NewsImagePagerAdapter(getApplicationContext());
         vpNewsDetailsImages.setAdapter(newsImagePagerAdapter);
 
         rvRelatedNews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -104,7 +115,16 @@ public class NewsDetailActivity extends BaseActivity implements LoaderManager.Lo
     }
 
     private void bindData(NewsVO news) {
+        tvNewsDetail.setText(news.getDetails());
+        tvPublicationName.setText(news.getPublication().getTitle());
+        tvPublishDate.setText(news.getPostedDate());
 
+        Glide
+                .with(ivPublicationLogo.getContext())
+                .load(news.getPublication().getLogo())
+                .into(ivPublicationLogo);
+
+        newsImagePagerAdapter.setImages(news.getImages());
     }
 
 }
