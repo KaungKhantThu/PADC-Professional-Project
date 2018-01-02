@@ -1,6 +1,7 @@
 package xyz.kkt.padcprofessionalproject.data.vo;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -54,4 +55,12 @@ public class CommentVO {
         return contentValues;
     }
 
+    public static CommentVO parseFromCursor(Cursor cursor) {
+        CommentVO comment = new CommentVO();
+        comment.commentId = cursor.getString(cursor.getColumnIndex(MMNewsContract.CommentEntry.COLUMN_COMMENT_ID));
+        comment.commentDate = cursor.getString(cursor.getColumnIndex(MMNewsContract.CommentEntry.COLUMN_COMMENT_DATE));
+        comment.actedUser = ActedUserVO.parseFromCursor(cursor);
+
+        return comment;
+    }
 }

@@ -1,6 +1,7 @@
 package xyz.kkt.padcprofessionalproject.data.vo;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -12,7 +13,7 @@ import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsContract;
 
 public class SendToVO {
 
-    @SerializedName("sent-to-id")
+    @SerializedName("send-to-id")
     private String sendToId;
 
     @SerializedName("sent-date")
@@ -53,4 +54,13 @@ public class SendToVO {
         return contentValues;
     }
 
+    public static SendToVO parseFromCursor(Cursor cursor) {
+        SendToVO sendTo = new SendToVO();
+        sendTo.sendToId = cursor.getString(cursor.getColumnIndex(MMNewsContract.SentToEntry.COLUMN_SENT_TO_ID));
+        sendTo.sendDate = cursor.getString(cursor.getColumnIndex(MMNewsContract.SentToEntry.COLUMN_SENT_DATE));
+        sendTo.sender = ActedUserVO.parseFromCursor(cursor);
+        sendTo.receiver = ActedUserVO.parseFromCursor(cursor);
+
+        return sendTo;
+    }
 }

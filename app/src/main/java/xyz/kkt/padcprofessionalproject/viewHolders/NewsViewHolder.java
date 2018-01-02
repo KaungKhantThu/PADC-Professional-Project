@@ -36,6 +36,7 @@ public class NewsViewHolder extends BaseViewHolder<NewsVO> {
     TextView tvNewsStatisticalData;
 
     private NewsItemDelegate mNewsItemDelegate;
+    private NewsVO news;
 
     public NewsViewHolder(View itemView, NewsItemDelegate newsItemDelegate) {
         super(itemView);
@@ -45,69 +46,129 @@ public class NewsViewHolder extends BaseViewHolder<NewsVO> {
 
     @Override
     public void setData(NewsVO data) {
+        news = data;
 
+//        if (data.getBrief() != null) {
+//            tvBriefNews.setText(data.getBrief());
+//        }
+//
+//        if (data.getPublication() != null) {
+//            if (data.getPublication().getTitle() != null) {
+//                tvPublicationName.setText(data.getPublication().getTitle());
+//            }
+//            if (data.getPublication().getLogo() != null) {
+//                Glide.with(ivPublicationLogo.getContext())
+//                        .load(data.getPublication().getLogo())
+//                        .into(ivPublicationLogo);
+//            }
+//        }
+//
+//
+//        if (data.getPostedDate() != null) {
+//            tvPublishDate.setText(data.getPostedDate());
+//        }
+//
+//        int like = 0;
+//        int comment = 0;
+//        int sentTo = 0;
+//
+//
+//        if (data.getFavoriteActions() != null)
+//
+//        {
+//            like = data.getFavoriteActions().size();
+//        }
+//
+//        if (data.getComments() != null)
+//
+//        {
+//            comment = data.getComments().size();
+//        }
+//
+//        if (data.getSendTos() != null)
+//
+//        {
+//            sentTo = data.getSendTos().size();
+//        }
+//
+//        tvNewsStatisticalData.setText(like + " Likes- " + comment + " Comments - Send to " + sentTo + " people");
+//
+//        if (data.getImages() != null) {
+//            if (!data.getImages().isEmpty()) {
+//                Glide.with(ivNewsHeroImage.getContext())
+//                        .load(data.getImages().get(0))
+//                        .into(ivNewsHeroImage);
+//            } else {
+//                ivNewsHeroImage.setVisibility(View.GONE);
+//            }
+//
+//        }
+        if (data != null) {
 
-        if (data.getBrief() != null) {
-            tvBriefNews.setText(data.getBrief());
-        }
-
-        if (data.getPublication() != null) {
-            if (data.getPublication().getTitle() != null) {
-                tvPublicationName.setText(data.getPublication().getTitle());
-            }
             if (data.getPublication().getLogo() != null) {
-                Glide.with(ivPublicationLogo.getContext())
+                ivPublicationLogo.setVisibility(View.VISIBLE);
+                Glide
+                        .with(ivPublicationLogo.getContext())
                         .load(data.getPublication().getLogo())
                         .into(ivPublicationLogo);
+            } else {
+                ivPublicationLogo.setVisibility(View.GONE);
             }
-        }
 
+            if (data.getPublication().getTitle() != null) {
+                tvPublicationName.setVisibility(View.VISIBLE);
+                tvPublicationName.setText(data.getPublication().getTitle());
+            } else {
+                tvPublicationName.setVisibility(View.GONE);
+            }
 
-        if (data.getPostedDate() != null) {
-            tvPublishDate.setText(data.getPostedDate());
-        }
+            if (data.getPostedDate() != null) {
+                tvPublishDate.setVisibility(View.VISIBLE);
+                tvPublishDate.setText(data.getPostedDate());
+            } else {
+                tvPublishDate.setVisibility(View.GONE);
+            }
 
-        int like = 0;
-        int comment = 0;
-        int sentTo = 0;
+            if (data.getBrief() != null) {
+                tvBriefNews.setVisibility(View.VISIBLE);
+                tvBriefNews.setText(data.getBrief());
+            } else {
+                tvBriefNews.setVisibility(View.GONE);
+            }
 
-
-        if (data.getFavoriteActions() != null)
-
-        {
-            like = data.getFavoriteActions().size();
-        }
-
-        if (data.getComments() != null)
-
-        {
-            comment = data.getComments().size();
-        }
-
-        if (data.getSendTos() != null)
-
-        {
-            sentTo = data.getSendTos().size();
-        }
-
-        tvNewsStatisticalData.setText(like + " Likes- " + comment + " Comments - Send to " + sentTo + " people");
-
-        if (data.getImages() != null) {
             if (!data.getImages().isEmpty()) {
-                Glide.with(ivNewsHeroImage.getContext())
+                ivNewsHeroImage.setVisibility(View.VISIBLE);
+                Glide
+                        .with(ivNewsHeroImage.getContext())
                         .load(data.getImages().get(0))
                         .into(ivNewsHeroImage);
             } else {
                 ivNewsHeroImage.setVisibility(View.GONE);
             }
 
+            String newsStatistics = "";
+            if (data.getFavoriteActions() != null) {
+                newsStatistics += String.valueOf(data.getFavoriteActions().size()) + " likes - ";
+            } else {
+                newsStatistics += "0 likes - ";
+            }
+            if (data.getComments() != null) {
+                newsStatistics += String.valueOf(data.getComments().size()) + " comments - ";
+            } else {
+                newsStatistics += "0 comments - ";
+            }
+            if (data.getSendTos() != null) {
+                newsStatistics += "Send to " + String.valueOf(data.getSendTos().size()) + " people";
+            } else {
+                newsStatistics += "Send to 0 people";
+            }
+            tvNewsStatisticalData.setText(newsStatistics);
         }
-
     }
 
     @Override
     public void onClick(View view) {
-        mNewsItemDelegate.onTapNews();
+        mNewsItemDelegate.onTapNews(news);
 
         EventBus.getDefault().post(new TapNewsEvent());
     }

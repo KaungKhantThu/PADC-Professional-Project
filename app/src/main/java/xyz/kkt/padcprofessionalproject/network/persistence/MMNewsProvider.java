@@ -28,7 +28,9 @@ public class MMNewsProvider extends ContentProvider {
 
     private static final UriMatcher sUriMatcher = buildUriMatcher();
     private static final SQLiteQueryBuilder sNewsWithPublication_IJ;
-    private static final SQLiteQueryBuilder sNewsWithFavoriteAction_IJ;
+    private static final SQLiteQueryBuilder sUserWithFavoriteAction_IJ;
+    private static final SQLiteQueryBuilder sUserWithCommment_IJ;
+    private static final SQLiteQueryBuilder sUserWithSentToAction_IJ;
 
     static {
         sNewsWithPublication_IJ = new SQLiteQueryBuilder();
@@ -39,12 +41,31 @@ public class MMNewsProvider extends ContentProvider {
                         MMNewsContract.PublicationEntry.TABLE_NAME + "." + MMNewsContract.PublicationEntry.COLUMN_PUBLICATION_ID
         );
 
-        sNewsWithFavoriteAction_IJ = new SQLiteQueryBuilder();
-        sNewsWithFavoriteAction_IJ.setTables(
+        sUserWithFavoriteAction_IJ = new SQLiteQueryBuilder();
+        sUserWithFavoriteAction_IJ.setTables(
                 MMNewsContract.ActedUserEntry.TABLE_NAME + " INNER JOIN " +
                         MMNewsContract.FavoriteActionEntry.TABLE_NAME + " ON " +
                         MMNewsContract.ActedUserEntry.TABLE_NAME + "." + MMNewsContract.ActedUserEntry.COLUMN_USER_ID + " = " +
                         MMNewsContract.FavoriteActionEntry.TABLE_NAME + "." + MMNewsContract.FavoriteActionEntry.COLUMN_USER_ID
+        );
+
+        sUserWithCommment_IJ = new SQLiteQueryBuilder();
+        sUserWithCommment_IJ.setTables(
+                MMNewsContract.ActedUserEntry.TABLE_NAME + " INNER JOIN " +
+                        MMNewsContract.CommentEntry.TABLE_NAME + " ON " +
+                        MMNewsContract.ActedUserEntry.TABLE_NAME + "." + MMNewsContract.ActedUserEntry.COLUMN_USER_ID + " = " +
+                        MMNewsContract.CommentEntry.TABLE_NAME + "." + MMNewsContract.CommentEntry.COLUMN_USER_ID
+        );
+
+        sUserWithSentToAction_IJ = new SQLiteQueryBuilder();
+        sUserWithSentToAction_IJ.setTables(
+                MMNewsContract.SentToEntry.TABLE_NAME + " INNER JOIN " +
+                        MMNewsContract.ActedUserEntry.TABLE_NAME + " ON " +
+                        MMNewsContract.SentToEntry.TABLE_NAME + "." + MMNewsContract.SentToEntry.COLUMN_SENDER_ID + " = " +
+                        MMNewsContract.ActedUserEntry.TABLE_NAME + "." + MMNewsContract.ActedUserEntry.COLUMN_USER_ID +
+                        " INNER JOIN " + MMNewsContract.ActedUserEntry.TABLE_NAME + " AS au ON " +
+                        MMNewsContract.SentToEntry.TABLE_NAME + "." + MMNewsContract.SentToEntry.COLUMN_RECEIVER_ID + " = " +
+                        "au." + MMNewsContract.ActedUserEntry.COLUMN_USER_ID
         );
     }
 
@@ -131,7 +152,25 @@ public class MMNewsProvider extends ContentProvider {
                         sortOrder);
                 break;
             case FAVORITE_ACTIONS:
-                queryCursor = sNewsWithFavoriteAction_IJ.query(mDBHelper.getReadableDatabase(),
+                queryCursor = sUserWithFavoriteAction_IJ.query(mDBHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case COMMENT_ACTIONS:
+                queryCursor = sUserWithCommment_IJ.query(mDBHelper.getReadableDatabase(),
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null,
+                        null,
+                        sortOrder);
+                break;
+            case SENT_TO_ACTIONS:
+                queryCursor = sUserWithSentToAction_IJ.query(mDBHelper.getReadableDatabase(),
                         projection,
                         selection,
                         selectionArgs,

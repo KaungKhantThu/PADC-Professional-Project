@@ -169,14 +169,9 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
     }
 
     @Override
-    public void onTapNews() {
-        Intent intent = NewsDetailActivity.newIntent(getApplicationContext());
+    public void onTapNews(NewsVO news) {
+        Intent intent = NewsDetailActivity.newIntent(getApplicationContext(), news.getNewsId());
         startActivity(intent);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTapNewsEvent(TapNewsEvent event) {
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

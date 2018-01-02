@@ -73,14 +73,23 @@ public class NewsVO {
     }
 
     public List<FavoriteActionVO> getFavoriteActions() {
+        if (favoriteActions == null) {
+            favoriteActions = new ArrayList<>();
+        }
         return favoriteActions;
     }
 
     public List<CommentVO> getComments() {
+        if (comments == null) {
+            comments = new ArrayList<>();
+        }
         return comments;
     }
 
     public List<SendToVO> getSendTos() {
+        if (sendTos == null) {
+            sendTos = new ArrayList<>();
+        }
         return sendTos;
     }
 
@@ -106,8 +115,46 @@ public class NewsVO {
         news.publication = PublicationVO.parseFromCursor(cursor);
         news.images = loadImagesInNews(context, news.newsId);
         news.favoriteActions = loadFavoriteActionInNews(context, news.newsId);
+        news.comments = loadCommentsInNews(context, news.newsId);
+        news.sendTos = loadSentTosInNews(context, news.newsId);
 
         return news;
+    }
+
+    private static List<SendToVO> loadSentTosInNews(Context context, String newsId) {
+
+        Cursor sentToInNewsCursor = context.getContentResolver().query(MMNewsContract.SentToEntry.CONTENT_URI, null,
+                MMNewsContract.SentToEntry.COLUMN_NEWS_ID + " = ?", new String[]{newsId},
+                null);
+
+        if (sentToInNewsCursor != null && sentToInNewsCursor.moveToFirst()) {
+            List<SendToVO> sentTosInNews = new ArrayList<>();
+            do {
+                sentTosInNews.add(
+                        SendToVO.parseFromCursor(sentToInNewsCursor));
+            } while (sentToInNewsCursor.moveToNext());
+            sentToInNewsCursor.close();
+            return sentTosInNews;
+        }
+        return null;
+
+    }
+
+    private static List<CommentVO> loadCommentsInNews(Context context, String newsId) {
+        Cursor commentInNewsCursor = context.getContentResolver().query(MMNewsContract.CommentEntry.CONTENT_URI, null,
+                MMNewsContract.CommentEntry.COLUMN_NEWS_ID + " = ?", new String[]{newsId},
+                null);
+
+        if (commentInNewsCursor != null && commentInNewsCursor.moveToFirst()) {
+            List<CommentVO> commentsInNews = new ArrayList<>();
+            do {
+                commentsInNews.add(
+                        CommentVO.parseFromCursor(commentInNewsCursor));
+            } while (commentInNewsCursor.moveToNext());
+            commentInNewsCursor.close();
+            return commentsInNews;
+        }
+        return null;
     }
 
     private static List<String> loadImagesInNews(Context context, String newsId) {

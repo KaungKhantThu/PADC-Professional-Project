@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class MMNewsDBHelper extends SQLiteOpenHelper {
 
     public static final String DB_NAME = "mmNews.db";
-    public static final int DB_VERSION = 2;
+    public static final int DB_VERSION = 3;
 
     public static final String SQL_CREATE_NEWS = "CREATE TABLE " + MMNewsContract.NewsEntry.TABLE_NAME + " (" +
             MMNewsContract.NewsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -54,6 +54,7 @@ public class MMNewsDBHelper extends SQLiteOpenHelper {
     public static final String SQL_CREATE_COMMENT = "CREATE TABLE " + MMNewsContract.CommentEntry.TABLE_NAME + " (" +
             MMNewsContract.CommentEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             MMNewsContract.CommentEntry.COLUMN_COMMENT_ID + " VARCHAR(256), " +
+            MMNewsContract.CommentEntry.COLUMN_COMMENT + " TEXT, " +
             MMNewsContract.CommentEntry.COLUMN_COMMENT_DATE + " TEXT, " +
             MMNewsContract.CommentEntry.COLUMN_NEWS_ID + " VARCHAR(256), " +
             MMNewsContract.CommentEntry.COLUMN_USER_ID + " VARCHAR(256), " +
