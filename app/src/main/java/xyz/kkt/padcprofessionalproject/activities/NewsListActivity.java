@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,11 +26,13 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.kkt.padcprofessionalproject.R;
+import xyz.kkt.padcprofessionalproject.SFCNewsApp;
 import xyz.kkt.padcprofessionalproject.adapters.NewsAdpater;
 import xyz.kkt.padcprofessionalproject.components.EmptyViewPod;
 import xyz.kkt.padcprofessionalproject.components.SmartRecyclerView;
@@ -75,8 +78,10 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
             @Override
             public void onClick(View view) {
                 //drawerLayout.openDrawer(GravityCompat.START);
-                Intent intent = LoginRegisterActivity.newIntent(getApplicationContext());
-                startActivity(intent);
+//                Intent intent = LoginRegisterActivity.newIntent(getApplicationContext());
+//                startActivity(intent);
+                Date today = new Date();
+                Log.d(SFCNewsApp.LOG_TAG, "Today (with default format) : " + today.toString());
             }
         });
 
@@ -88,7 +93,9 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
         mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
             @Override
             public void onListEndReach() {
-                //Snackbar.make(rvNews, "This is all the data for Now.", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(rvNews, "Loading new data.", Snackbar.LENGTH_LONG).show();
+                swipeRefreshLayout.setRefreshing(true);
+
                 NewsModel.getInstance().loadMoreNews(getApplicationContext());
             }
         });

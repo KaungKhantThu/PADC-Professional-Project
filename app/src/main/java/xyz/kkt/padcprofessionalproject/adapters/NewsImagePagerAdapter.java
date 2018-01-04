@@ -15,6 +15,7 @@ import java.util.List;
 
 import xyz.kkt.padcprofessionalproject.R;
 import xyz.kkt.padcprofessionalproject.utils.AppConstants;
+import xyz.kkt.padcprofessionalproject.viewitems.NewsDetailsImageViewItem;
 
 /**
  * Created by Lenovo on 11/11/2017.
@@ -23,7 +24,6 @@ import xyz.kkt.padcprofessionalproject.utils.AppConstants;
 public class NewsImagePagerAdapter extends PagerAdapter {
 
     private LayoutInflater mLayoutInflater;
-    private ImageView iv;
     private List<String> images;
 
     public NewsImagePagerAdapter(Context context) {
@@ -34,18 +34,16 @@ public class NewsImagePagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        iv = (ImageView) mLayoutInflater.inflate(R.layout.view_item_news_details_image, container, false);
-        Glide
-                .with(iv.getContext())
-                .load(images.get(position))
-                .into(iv);
-        container.addView(iv);
-        return iv;
+        NewsDetailsImageViewItem itemView = (NewsDetailsImageViewItem) mLayoutInflater.inflate(R.layout.view_item_news_details_image, container, false);
+        itemView.setData(images.get(position));
+        container.addView(itemView);
+
+        return itemView;
     }
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((ImageView) object);
+        container.removeView((View) object);
     }
 
     @Override

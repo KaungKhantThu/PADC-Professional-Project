@@ -75,6 +75,8 @@ public class NewsDetailActivity extends BaseActivity implements LoaderManager.Lo
         mRelatedNewsAdapter = new RelatedNewsAdapter(getApplicationContext());
         rvRelatedNews.setAdapter(mRelatedNewsAdapter);
 
+        vpNewsDetailsImages.setOffscreenPageLimit(newsImagePagerAdapter.getCount());
+
         mNewsId = getIntent().getStringExtra(IE_NEWS_ID);
         if (TextUtils.isEmpty(mNewsId)) {
             throw new UnsupportedOperationException("newsId required for NewsDetailsActivity");
@@ -124,7 +126,11 @@ public class NewsDetailActivity extends BaseActivity implements LoaderManager.Lo
                 .load(news.getPublication().getLogo())
                 .into(ivPublicationLogo);
 
-        newsImagePagerAdapter.setImages(news.getImages());
+        if(news.getImages().isEmpty()) {
+
+        } else {
+            newsImagePagerAdapter.setImages(news.getImages());
+        }
     }
 
 }
