@@ -1,15 +1,10 @@
 package xyz.kkt.padcprofessionalproject.adapters;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.List;
-
 import xyz.kkt.padcprofessionalproject.R;
-import xyz.kkt.padcprofessionalproject.contents.content;
 import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
 import xyz.kkt.padcprofessionalproject.viewHolders.NewsViewHolder;

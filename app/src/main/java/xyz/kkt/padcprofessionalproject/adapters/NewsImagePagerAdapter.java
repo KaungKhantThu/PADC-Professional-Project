@@ -53,7 +53,7 @@ public class NewsImagePagerAdapter extends PagerAdapter {
 
     @Override
     public boolean isViewFromObject(View view, Object object) {
-        return view == ((ImageView) object);
+        return view == ((View) object);
     }
 
     public void setImages(List<String> images) {

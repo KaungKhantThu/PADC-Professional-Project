@@ -37,7 +37,6 @@ import xyz.kkt.padcprofessionalproject.adapters.NewsAdpater;
 import xyz.kkt.padcprofessionalproject.components.EmptyViewPod;
 import xyz.kkt.padcprofessionalproject.components.SmartRecyclerView;
 import xyz.kkt.padcprofessionalproject.components.SmartScrollListener;
-import xyz.kkt.padcprofessionalproject.contents.content;
 import xyz.kkt.padcprofessionalproject.data.models.NewsModel;
 import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
