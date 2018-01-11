@@ -21,10 +21,8 @@ import com.bumptech.glide.Glide;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.kkt.padcprofessionalproject.R;
-import xyz.kkt.padcprofessionalproject.adapters.NewsAdpater;
 import xyz.kkt.padcprofessionalproject.adapters.NewsImagePagerAdapter;
 import xyz.kkt.padcprofessionalproject.adapters.RelatedNewsAdapter;
-import xyz.kkt.padcprofessionalproject.contents.content;
 import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsContract;
 

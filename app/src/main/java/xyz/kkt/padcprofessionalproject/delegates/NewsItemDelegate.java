@@ -1,6 +1,5 @@
 package xyz.kkt.padcprofessionalproject.delegates;
 
-import xyz.kkt.padcprofessionalproject.contents.content;
 import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 
 /**

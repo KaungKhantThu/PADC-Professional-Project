@@ -12,6 +12,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import xyz.kkt.padcprofessionalproject.SFCNewsApp;
 import xyz.kkt.padcprofessionalproject.data.vo.CommentVO;
 import xyz.kkt.padcprofessionalproject.data.vo.FavoriteActionVO;
@@ -19,6 +21,7 @@ import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 import xyz.kkt.padcprofessionalproject.data.vo.PublicationVO;
 import xyz.kkt.padcprofessionalproject.data.vo.SendToVO;
 import xyz.kkt.padcprofessionalproject.events.RestApiEvents;
+import xyz.kkt.padcprofessionalproject.network.MMNewsDataAgent;
 import xyz.kkt.padcprofessionalproject.network.MMNewsDataAgentImpl;
 import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsContract;
 import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsProvider;
@@ -31,26 +34,25 @@ import xyz.kkt.padcprofessionalproject.utils.ConfigUtils;
 
 public class NewsModel {
 
-    private static NewsModel objInstance;
-
     private List<NewsVO> mNews;
 
-    private NewsModel() {
+    @Inject
+    MMNewsDataAgent mDataAgent;
+
+    @Inject
+    ConfigUtils mUonfigUtils;
+
+    public NewsModel(Context context) {
         EventBus.getDefault().register(this);
         mNews = new ArrayList<>();
-    }
 
-    public static NewsModel getInstance() {
-        if (objInstance == null) {
-            objInstance = new NewsModel();
-        }
-
-        return objInstance;
+        SFCNewsApp sfcNewsApp = (SFCNewsApp) context.getApplicationContext();
+        sfcNewsApp.getSFCAppComponent().inject(this);
     }
 
     public void startLoadingMMNews(Context context) {
-        MMNewsDataAgentImpl.getInstance().loadMMNews(AppConstants.ACCESS_TOKEN,
-                ConfigUtils.getObjInstance().loadPageIndex(), context);
+        mDataAgent.loadMMNews(AppConstants.ACCESS_TOKEN,
+                mUonfigUtils.loadPageIndex(), context);
     }
 
     public List<NewsVO> getNews() {
@@ -58,21 +60,21 @@ public class NewsModel {
     }
 
     public void loadMoreNews(Context context) {
-        int pageIndex = ConfigUtils.getObjInstance().loadPageIndex();
-        MMNewsDataAgentImpl.getInstance().loadMMNews(AppConstants.ACCESS_TOKEN,
+        int pageIndex = mUonfigUtils.loadPageIndex();
+        mDataAgent.loadMMNews(AppConstants.ACCESS_TOKEN,
                 pageIndex, context);
     }
 
     public void forceRefreshNews(Context context) {
         mNews = new ArrayList<>();
-        ConfigUtils.getObjInstance().savePageIndex(1);
+        mUonfigUtils.savePageIndex(1);
         startLoadingMMNews(context);
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onNewsDataLoaded(RestApiEvents.NewsDataLoadedEvent event) {
         mNews.addAll(event.getLoadNews());
-        ConfigUtils.getObjInstance().savePageIndex(event.getLoadedPageIndex() + 1);
+        mUonfigUtils.savePageIndex(event.getLoadedPageIndex() + 1);
 
         //TODO Logic to save the data in Persistence Layer
 

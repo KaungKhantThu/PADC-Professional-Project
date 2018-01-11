@@ -24,11 +24,11 @@ import xyz.kkt.padcprofessionalproject.network.response.GetNewsResponse;
 
 public class MMNewsDataAgentImpl implements MMNewsDataAgent {
 
-    private static MMNewsDataAgentImpl objInstance;
+//    private static MMNewsDataAgentImpl objInstance;
 
     private MMNewsAPI theAPI;
 
-    private MMNewsDataAgentImpl() {
+    public MMNewsDataAgentImpl() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(60, TimeUnit.SECONDS)
@@ -45,13 +45,13 @@ public class MMNewsDataAgentImpl implements MMNewsDataAgent {
 
     }
 
-
-    public static MMNewsDataAgentImpl getInstance() {
-        if (objInstance == null) {
-            objInstance = new MMNewsDataAgentImpl();
-        }
-        return objInstance;
-    }
+//
+//    public static MMNewsDataAgentImpl getInstance() {
+//        if (objInstance == null) {
+//            objInstance = new MMNewsDataAgentImpl();
+//        }
+//        return objInstance;
+//    }
 
     @Override
     public void loadMMNews(String accessToken, int pageNo, final Context context) {

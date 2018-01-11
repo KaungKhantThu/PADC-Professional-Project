@@ -1,5 +1,6 @@
 package xyz.kkt.padcprofessionalproject.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import xyz.kkt.padcprofessionalproject.R;
@@ -42,9 +45,14 @@ import xyz.kkt.padcprofessionalproject.data.vo.NewsVO;
 import xyz.kkt.padcprofessionalproject.delegates.NewsItemDelegate;
 import xyz.kkt.padcprofessionalproject.events.RestApiEvents;
 import xyz.kkt.padcprofessionalproject.events.TapNewsEvent;
+import xyz.kkt.padcprofessionalproject.mvp.presenters.NewsListPresenter;
+import xyz.kkt.padcprofessionalproject.mvp.views.NewsListView;
 import xyz.kkt.padcprofessionalproject.network.persistence.MMNewsContract;
+import xyz.kkt.padcprofessionalproject.viewitems.NewsDetailsImageViewItem;
 
-public class NewsListActivity extends BaseActivity implements NewsItemDelegate, LoaderManager.LoaderCallbacks<Cursor> {
+public class NewsListActivity extends BaseActivity implements
+        LoaderManager.LoaderCallbacks<Cursor>,
+        NewsListView {
 
     private static final int NEWS_LIST_LOADER_ID = 1;
 
@@ -60,15 +68,26 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
     @BindView(R.id.swipe_refreshing_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    NewsAdpater mNewsAdpater;
+    private NewsAdpater mNewsAdpater;
 
     private SmartScrollListener mSmartScrollListener;
+
+    @Inject
+    NewsListPresenter mPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_list);
         ButterKnife.bind(this, this);
+
+        SFCNewsApp sfcNewsApp = (SFCNewsApp) getApplicationContext();
+        sfcNewsApp.getSFCAppComponent().inject(this);
+
+        //mPresenter = new NewsListPresenter();
+        mPresenter.onCreate(this);
+
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -86,7 +105,7 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
 
         rvNews.setEmptyView(vpEmptyNews);
         rvNews.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        mNewsAdpater = new NewsAdpater(getApplicationContext(), this);
+        mNewsAdpater = new NewsAdpater(getApplicationContext(), mPresenter);
         rvNews.setAdapter(mNewsAdpater);
 
         mSmartScrollListener = new SmartScrollListener(new SmartScrollListener.OnSmartScrollListener() {
@@ -95,14 +114,14 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
                 Snackbar.make(rvNews, "Loading new data.", Snackbar.LENGTH_LONG).show();
                 swipeRefreshLayout.setRefreshing(true);
 
-                NewsModel.getInstance().loadMoreNews(getApplicationContext());
+                mPresenter.onNewsListEndReach(getApplicationContext());
             }
         });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                NewsModel.getInstance().forceRefreshNews(getApplicationContext());
+                mPresenter.onForceRefresh(getApplicationContext());
             }
         });
 
@@ -139,52 +158,31 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
     @Override
     protected void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
-        List<NewsVO> newsList = NewsModel.getInstance().getNews();
-        if (!newsList.isEmpty()) {
-            mNewsAdpater.setNewData(newsList);
-        } else {
-            swipeRefreshLayout.setRefreshing(true);
-        }
+        mPresenter.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPresenter.onPause();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+        mPresenter.onStop();
     }
 
     @Override
-    public void onTapComment() {
-
-    }
-
-    @Override
-    public void onTapSendTo() {
-
-    }
-
-    @Override
-    public void onTapFavorite() {
-
-    }
-
-    @Override
-    public void onTapStatics() {
-
-    }
-
-    @Override
-    public void onTapNews(NewsVO news) {
-        Intent intent = NewsDetailActivity.newIntent(getApplicationContext(), news.getNewsId());
-        startActivity(intent);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onNewsDataLoaded(RestApiEvents.NewsDataLoadedEvent event) {
-//        mNewsAdpater.appendNewData(event.getLoadNews());
-//        swipeRefreshLayout.setRefreshing(false);
-
+    protected void onDestroy() {
+        super.onDestroy();
+        mPresenter.onDestroy();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -207,23 +205,36 @@ public class NewsListActivity extends BaseActivity implements NewsItemDelegate, 
         don't close cursor because it needs to be refreshed
         when the new data is loaded from network
          */
+        mPresenter.onDataLoaded(getApplicationContext(), data);
 
-        if (data != null && data.moveToFirst()) {
-            List<NewsVO> newsList = new ArrayList<>();
-            do {
-                NewsVO news = NewsVO.parseFromCursor(getApplicationContext(), data);
-                newsList.add(news);
-            } while (data.moveToNext());
-            {
-                mNewsAdpater.setNewData(newsList);
-                swipeRefreshLayout.setRefreshing(false);
-            }
-
-        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+
+    @Override
+    public void displayNewsList(List<NewsVO> newsList) {
+        mNewsAdpater.setNewData(newsList);
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void setTrueSwipeRefreshLayout() {
+        swipeRefreshLayout.setRefreshing(true);
+    }
+
+
+    @Override
+    public void navigateToNewsDetails(NewsVO newsVO) {
+        Intent intent = NewsDetailActivity.newIntent(getApplicationContext(), newsVO.getNewsId());
+        startActivity(intent);
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
     }
 }
