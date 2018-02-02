@@ -39,11 +39,26 @@ public class NewsVO {
     private List<FavoriteActionVO> favoriteActions;
 
     @SerializedName("comments")
-    private List<CommentVO> comments;
+    private List<CommentVO> commentActions;
 
     @SerializedName("sent-tos")
-    private List<SendToVO> sendTos;
+    private List<SendToVO> sentToActions;
 
+    public NewsVO() {
+
+    }
+
+    public NewsVO(String brief, String details, List<String> images, String postedDate) {
+        this.newsId = String.valueOf(System.currentTimeMillis() / 1000);
+        this.brief = brief;
+        this.details = details;
+        this.images = images;
+        this.postedDate = postedDate;
+    }
+
+    public void setPublication(PublicationVO publication) {
+        this.publication = publication;
+    }
 
     public String getNewsId() {
         return newsId;
@@ -79,18 +94,12 @@ public class NewsVO {
         return favoriteActions;
     }
 
-    public List<CommentVO> getComments() {
-        if (comments == null) {
-            comments = new ArrayList<>();
-        }
-        return comments;
+    public List<SendToVO> getSentToActions() {
+        return sentToActions;
     }
 
-    public List<SendToVO> getSendTos() {
-        if (sendTos == null) {
-            sendTos = new ArrayList<>();
-        }
-        return sendTos;
+    public List<CommentVO> getCommentActions() {
+        return commentActions;
     }
 
     public ContentValues parseToContentValues() {
@@ -115,8 +124,8 @@ public class NewsVO {
         news.publication = PublicationVO.parseFromCursor(cursor);
         news.images = loadImagesInNews(context, news.newsId);
         news.favoriteActions = loadFavoriteActionInNews(context, news.newsId);
-        news.comments = loadCommentsInNews(context, news.newsId);
-        news.sendTos = loadSentTosInNews(context, news.newsId);
+        news.commentActions = loadCommentsInNews(context, news.newsId);
+        news.sentToActions = loadSentTosInNews(context, news.newsId);
 
         return news;
     }

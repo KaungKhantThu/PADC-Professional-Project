@@ -8,6 +8,7 @@ import dagger.Module;
 import dagger.Provides;
 import xyz.kkt.padcprofessionalproject.SFCNewsApp;
 import xyz.kkt.padcprofessionalproject.data.models.NewsModel;
+import xyz.kkt.padcprofessionalproject.mvp.presenters.AddNewsPresenter;
 import xyz.kkt.padcprofessionalproject.mvp.presenters.NewsListPresenter;
 import xyz.kkt.padcprofessionalproject.network.MMNewsDataAgent;
 import xyz.kkt.padcprofessionalproject.network.MMNewsDataAgentImpl;
@@ -39,6 +40,11 @@ public class AppModule {
     @Provides
     public NewsListPresenter provideNewsListPresenter() {
         return new NewsListPresenter();
+    }
+
+    @Provides
+    public AddNewsPresenter provideAddNewsPresenter() {
+        return new AddNewsPresenter();
     }
 
 }

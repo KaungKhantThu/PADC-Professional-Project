@@ -18,6 +18,10 @@ public interface NewsListView {
 
     void navigateToNewsDetails(NewsVO newsVO);
 
+    void showAddNewsScreen();
+
+    void signInGoogle();
+
     Context getContext();
 
 }

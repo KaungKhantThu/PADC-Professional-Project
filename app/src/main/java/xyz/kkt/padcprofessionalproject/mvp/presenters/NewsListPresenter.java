@@ -3,6 +3,9 @@ package xyz.kkt.padcprofessionalproject.mvp.presenters;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.util.Log;
+
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -41,13 +44,12 @@ public class NewsListPresenter extends BasePresenter<NewsListView> implements Ne
 
     @Override
     public void onStart() {
-//        EventBus.getDefault().register(this);
-        List<NewsVO> newsList = mNewsModel.getNews();
-        if (!newsList.isEmpty()) {
-            mView.displayNewsList(newsList);
-        } else {
-            mView.setTrueSwipeRefreshLayout();
-        }
+//        List<NewsVO> newsList = mNewsModel.getNews();
+//        if (!newsList.isEmpty()) {
+//            mView.displayNewsList(newsList);
+//        } else {
+//            mView.setTrueSwipeRefreshLayout();
+//        }
     }
 
     @Override
@@ -98,8 +100,30 @@ public class NewsListPresenter extends BasePresenter<NewsListView> implements Ne
     }
 
     @Override
-    public void onTapNews(NewsVO news) {
-        mView.navigateToNewsDetails(news);
+    public void onTapNews(NewsVO newsVO) {
+        mView.navigateToNewsDetails(newsVO);
+    }
+
+    public void onSuccessGoogleSignIn(GoogleSignInAccount signInAccount) {
+        mNewsModel.authenticateUserWithGoogleAccount(signInAccount, new NewsModel.UserAuthenticateDelegate() {
+            @Override
+            public void onSuccessAuthenticate(GoogleSignInAccount account) {
+                Log.d(SFCNewsApp.LOG_TAG, "onSuccessAuthenticate : " + account.getDisplayName());
+            }
+
+            @Override
+            public void onFailureAuthenticate(String errorMsg) {
+                Log.d(SFCNewsApp.LOG_TAG, "onFailureAuthenticate : " + errorMsg);
+            }
+        });
+    }
+
+    public void onStartPublishingNews() {
+        if (mNewsModel.isUserAuthenticate()) {
+            mView.showAddNewsScreen();
+        } else {
+            mView.signInGoogle();
+        }
     }
 
 }

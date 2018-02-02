@@ -39,6 +39,8 @@ dependencies {
 
     compile 'com.github.bumptech.glide:glide:4.0.0'
 
+    implementation 'net.aungpyaephyo:mmtextview:1.1'
+
     compile 'org.greenrobot:eventbus:3.1.1'
     compile 'com.google.code.gson:gson:2.8.2'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
@@ -49,7 +51,15 @@ dependencies {
     compile 'com.google.dagger:dagger:2.12'
     provided 'javax.annotation:jsr250-api:1.0'
 
+    compile 'com.google.android.gms:play-services-auth:11.0.4'
+
+    compile 'com.google.firebase:firebase-core:11.0.4'
+    compile 'com.google.firebase:firebase-database:11.0.4'
+    compile 'com.google.firebase:firebase-auth:11.0.4'
+    compile 'com.google.firebase:firebase-storage:11.0.4'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+apply plugin: 'com.google.gms.google-services'

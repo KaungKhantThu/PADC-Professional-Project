@@ -29,5 +29,7 @@
     <string name="hint_enter_password">Enter Password</string>
     <string name="lbl_mark_my_home_on_google_map">I\'m home</string>
     <string name="format_news_statistical_data"><xliff:g id="like_count">%1$d</xliff:g> Likes - <xliff:g id="comment_count">%2$d</xliff:g> Comments and Sent to <xliff:g id="sent_count">%3$d</xliff:g> people</string>
-
+    <string name="lbl_add_photo">သတင်းဓါတ်ပုံ</string>
+    <string name="btn_add_news">Publish</string>
+    <string name="screen_title_add_news">Publish News</string>
 </resources>

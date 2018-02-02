@@ -17,7 +17,7 @@ public class SendToVO {
     private String sendToId;
 
     @SerializedName("sent-date")
-    private String sendDate;
+    private String sentDate;
 
     @SerializedName("acted-user")
     private ActedUserVO sender;
@@ -29,8 +29,8 @@ public class SendToVO {
         return sendToId;
     }
 
-    public String getSendDate() {
-        return sendDate;
+    public String getSentDate() {
+        return sentDate;
     }
 
     public ActedUserVO getSender() {
@@ -45,7 +45,7 @@ public class SendToVO {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(MMNewsContract.SentToEntry.COLUMN_SENT_TO_ID, sendToId);
-        contentValues.put(MMNewsContract.SentToEntry.COLUMN_SENT_DATE, sendDate);
+        contentValues.put(MMNewsContract.SentToEntry.COLUMN_SENT_DATE, sentDate);
         contentValues.put(MMNewsContract.SentToEntry.COLUMN_SENDER_ID, sender.getUserId());
         contentValues.put(MMNewsContract.SentToEntry.COLUMN_RECEIVER_ID, receiver.getUserId());
         contentValues.put(MMNewsContract.SentToEntry.COLUMN_NEWS_ID, newsId);
@@ -57,7 +57,7 @@ public class SendToVO {
     public static SendToVO parseFromCursor(Cursor cursor) {
         SendToVO sendTo = new SendToVO();
         sendTo.sendToId = cursor.getString(cursor.getColumnIndex(MMNewsContract.SentToEntry.COLUMN_SENT_TO_ID));
-        sendTo.sendDate = cursor.getString(cursor.getColumnIndex(MMNewsContract.SentToEntry.COLUMN_SENT_DATE));
+        sendTo.sentDate = cursor.getString(cursor.getColumnIndex(MMNewsContract.SentToEntry.COLUMN_SENT_DATE));
         sendTo.sender = ActedUserVO.parseFromCursor(cursor);
         sendTo.receiver = ActedUserVO.parseFromCursor(cursor);
 

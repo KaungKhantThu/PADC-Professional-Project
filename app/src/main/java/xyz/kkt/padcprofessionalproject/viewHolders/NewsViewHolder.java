@@ -151,13 +151,13 @@ public class NewsViewHolder extends BaseViewHolder<NewsVO> {
             } else {
                 newsStatistics += "0 likes - ";
             }
-            if (data.getComments() != null) {
-                newsStatistics += String.valueOf(data.getComments().size()) + " comments - ";
+            if (data.getCommentActions() != null) {
+                newsStatistics += String.valueOf(data.getCommentActions().size()) + " comments - ";
             } else {
                 newsStatistics += "0 comments - ";
             }
-            if (data.getSendTos() != null) {
-                newsStatistics += "Send to " + String.valueOf(data.getSendTos().size()) + " people";
+            if (data.getSentToActions() != null) {
+                newsStatistics += "Send to " + String.valueOf(data.getSentToActions().size()) + " people";
             } else {
                 newsStatistics += "Send to 0 people";
             }

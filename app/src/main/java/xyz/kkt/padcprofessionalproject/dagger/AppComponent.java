@@ -4,8 +4,10 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import xyz.kkt.padcprofessionalproject.SFCNewsApp;
+import xyz.kkt.padcprofessionalproject.activities.AddNewsActivity;
 import xyz.kkt.padcprofessionalproject.activities.NewsListActivity;
 import xyz.kkt.padcprofessionalproject.data.models.NewsModel;
+import xyz.kkt.padcprofessionalproject.mvp.presenters.AddNewsPresenter;
 import xyz.kkt.padcprofessionalproject.mvp.presenters.NewsListPresenter;
 import xyz.kkt.padcprofessionalproject.dagger.NetworkModule;
 
@@ -24,5 +26,9 @@ public interface AppComponent {
     void inject(NewsListPresenter newsListPresenter);
 
     void inject(NewsListActivity newsListActivity);
+
+    void inject(AddNewsPresenter addNewsPresenter);
+
+    void inject(AddNewsActivity addNewsActivity);
 
 }
